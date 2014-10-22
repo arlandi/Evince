@@ -164,7 +164,7 @@
                         <ion-list>
                             <ion-item ng-repeat="user in searchResults" class="item-icon-right" >
                                 {{user.username}}
-                                <i class="icon" ng-disabled="isFriends(user)" ng-class="{'ion-ios7-plus-outline' : !isFriends(user), 'ion-ios7-plus' : isFriends(user)}" ng-click="addUser(user)"></i>
+                                <i class="icon" ng-class="{'ion-ios7-plus-outline' : !isFriends(user), 'ion-ios7-plus' : isFriends(user)}" ng-click="addOrRemove(user)"></i>
                             </ion-item>
                         </ion-list>
                     </ion-content>

@@ -76,6 +76,10 @@ angular.module('starter', ['ionic'])
 
     if ($rootScope.currentUser !== null) {
       // $state.go('home');
+
+      if ( !$rootScope.currentUser.friends ) {
+        $rootScope.getCurrentUserFriends();
+      }
     }
 
     cordova.plugins.Keyboard.disableScroll(true);
@@ -88,7 +92,7 @@ angular.module('starter', ['ionic'])
   $scope.signIn = function(user) {
     $('#signInError').addClass('hidden');
 
-    if (user === undefined || !user.username || !user.password) {
+    if ( !user || !user.username || !user.password) {
       $scope.signInError = 'Please fill out all the fields.';
       $('#signInError').removeClass('hidden');
       return false;
@@ -128,7 +132,7 @@ angular.module('starter', ['ionic'])
   $scope.signUp = function(user) {
     $('#signUpError').addClass('hidden');
 
-    if (user === undefined || !user.email || !user.username || !user.password) {
+    if ( !user || !user.email || !user.username || !user.password) {
       $scope.signUpError = 'Please fill out all the fields.';
       $('#signUpError').removeClass('hidden');
       return false;
@@ -177,7 +181,7 @@ angular.module('starter', ['ionic'])
   $scope.friends = [];
 
   $scope.evince = function(evinceMessage) {
-    if (evinceMessage === undefined) {
+    if ( !evinceMessage ) {
       return;
     }
     $state.go('sendevince');
@@ -192,17 +196,17 @@ angular.module('starter', ['ionic'])
   $('body').removeClass('hide-nav');
 })
 
-.controller('AddFriendsCtrl', function($scope, $state, $rootScope) {
+.controller('AddFriendsCtrl', function($scope, $state, $rootScope, $ionicPopup) {
   $('body').removeClass('hide-nav');
 
-  if ($rootScope.currentUser !== undefined && $rootScope.currentUser.friends === undefined) {
+  if ( $rootScope.currentUser && !$rootScope.currentUser.friends ) {
     $rootScope.getCurrentUserFriends();
   }
 
   $scope.searchResults = [];
 
   $scope.searchUsers = function(username) {
-    if (username === undefined || username === '') {
+    if ( !username ) {
       return;
     }
 
@@ -218,7 +222,9 @@ angular.module('starter', ['ionic'])
       success: function(userCollection) {
 
         if (userCollection.length === 0) {
-          alert('No users found.');
+          var alertPopup = $ionicPopup.alert({
+           title: 'No one with that username.'
+         });
         }
 
         userCollection.each(function(user) {
@@ -244,7 +250,15 @@ angular.module('starter', ['ionic'])
     return $rootScope.currentUser.friends.indexOf(user.id) > -1;
   }
 
-  $scope.addUser = function(user) {
+  $scope.addOrRemove = function(user) {
+    if( $scope.isFriends(user) ) {
+      $scope.removeFriend(user);
+    }else {
+      $scope.addFriend(user);
+    }
+  }
+
+  $scope.addFriend = function(user) {
     console.log('adding friend', user);
     var friendshipObject = Parse.Object.extend("Friendship");
     var friendship = new friendshipObject();
@@ -257,11 +271,39 @@ angular.module('starter', ['ionic'])
     friendship.save(null, {
       success: function(object) {
         $rootScope.currentUser.friends.push(toUser.id);
-        setTimeout(function() {
-          $rootScope.$apply();
+        setTimeout(function() { $rootScope.$apply(); });
+      },
+      error: function(error) {}
+    });
+  }
+
+  $scope.removeFriend = function(user) {
+    console.log('removing friend', user);
+
+    //Build toUser object
+    var userObject = Parse.Object.extend("User");
+    var toUser = new userObject();
+    toUser.id = user.id;
+
+    //Build Friendship Query
+    var friendshipObject = Parse.Object.extend("Friendship");
+    var query = new Parse.Query(friendshipObject);
+    query.equalTo('fromUser', $rootScope.currentUser).equalTo('toUser', toUser);
+
+    query.first({
+      success: function(object) {
+        object.destroy({
+          success: function(object) {
+            var index = $rootScope.currentUser.friends.indexOf(user.id);
+            if (index > -1) {
+              $rootScope.currentUser.friends.splice(index, 1);
+              setTimeout(function() { $rootScope.$apply(); });
+            }
+          },
+          error: function(object, error) { console.log(error); }
         });
       },
-      error: function(error) {},
+      error: function(error) { console.log(error); }
     });
   }
 
