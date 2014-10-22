@@ -40,21 +40,7 @@ angular.module('starter', ['ionic'])
 .run(function($ionicPlatform, $rootScope, $state) {
 
   $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
-    if (window.cordova && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-    }
-    if (window.StatusBar) {
-      StatusBar.styleDefault();
-    }
-    Parse.initialize("uzc2fQIZzhFY1GasSyx85TjTPki4lxi5Gt9cDQTi", "K0NlKEQo69SYJE1XIrUWd17o4MjTEsLqdiFEdzC7");
-
-    $rootScope.currentUser = Parse.User.current();
-
-    if ($rootScope.currentUser !== null) {
-      // $state.go('home');
-
+    $rootScope.getCurrentUserFriends = function() {
       var friendshipObject = Parse.Object.extend("Friendship");
       var friendshipCollectionDef = Parse.Collection.extend({
         model: friendshipObject,
@@ -76,10 +62,24 @@ angular.module('starter', ['ionic'])
       });
     }
 
+    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+    // for form inputs)
+    if (window.cordova && window.cordova.plugins.Keyboard) {
+      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+    }
+    if (window.StatusBar) {
+      StatusBar.styleDefault();
+    }
+    Parse.initialize("uzc2fQIZzhFY1GasSyx85TjTPki4lxi5Gt9cDQTi", "K0NlKEQo69SYJE1XIrUWd17o4MjTEsLqdiFEdzC7");
+
+    $rootScope.currentUser = Parse.User.current();
+
+    if ($rootScope.currentUser !== null) {
+      // $state.go('home');
+    }
+
     cordova.plugins.Keyboard.disableScroll(true);
-
   });
-
 })
 
 .controller('SignInCtrl', function($scope, $state, $rootScope) {
@@ -195,10 +195,14 @@ angular.module('starter', ['ionic'])
 .controller('AddFriendsCtrl', function($scope, $state, $rootScope) {
   $('body').removeClass('hide-nav');
 
+  if ($rootScope.currentUser !== undefined && $rootScope.currentUser.friends === undefined) {
+    $rootScope.getCurrentUserFriends();
+  }
+
   $scope.searchResults = [];
 
   $scope.searchUsers = function(username) {
-    if(username === undefined || username === ''){
+    if (username === undefined || username === '') {
       return;
     }
 
@@ -206,7 +210,7 @@ angular.module('starter', ['ionic'])
     var userObject = Parse.Object.extend("User");
     var userCollectionDef = Parse.Collection.extend({
       model: userObject,
-      query: (new Parse.Query(userObject).contains('username', username))
+      query: (new Parse.Query(userObject).contains('username', username.toLowerCase()))
     });
     var userCollection = new userCollectionDef();
 
@@ -253,9 +257,19 @@ angular.module('starter', ['ionic'])
     friendship.save(null, {
       success: function(object) {
         $rootScope.currentUser.friends.push(toUser.id);
-        setTimeout(function() { $rootScope.$apply(); });
+        setTimeout(function() {
+          $rootScope.$apply();
+        });
       },
       error: function(error) {},
+    });
+  }
+
+  $scope.onTabSelected = function() {
+    ionic.DomUtil.ready(function() {
+      $('.addfriends .tabs').css('top', $('#nav-bar').outerHeight());
+      $('.addfriends .pane').css('top', $('#nav-bar').outerHeight() + $('.addfriends .tabs').outerHeight());
+      // $('.search-friends-content').css('top', $('#nav-bar').outerHeight() + $('.addfriends .tabs').outerHeight() + 44);
     });
   }
 })

@@ -142,19 +142,19 @@
         <ion-view title="Add Friends">
             <ion-tabs class="tabs-positive tabs-icon-only addfriends">
 
-                <ion-tab title="Heart" icon-on="ion-ios7-heart" icon-off="ion-ios7-heart-outline" class="bg-color-one">
+                <ion-tab on-select="onTabSelected()" title="Heart" icon-on="ion-ios7-heart" icon-off="ion-ios7-heart-outline" class="bg-color-one">
                     <p class="pane-title">People that added you.</p>
                 </ion-tab>
 
-                <ion-tab title="Contacts" icon-on="ion-ios7-bookmarks" icon-off="ion-ios7-bookmarks-outline" class="bg-color-two">
+                <ion-tab on-select="onTabSelected()" title="Contacts" icon-on="ion-ios7-bookmarks" icon-off="ion-ios7-bookmarks-outline" class="bg-color-two">
                     <p class="pane-title">Add Friends to contact to be implemented.</p>
                 </ion-tab>
 
-                <ion-tab title="Search" icon-on="ion-ios7-search-strong" icon-off="ion-ios7-search" class="bg-color-three">
-                    <form class="bar bar-header item-input-inset">
+                <ion-tab on-select="onTabSelected()" title="Search" icon-on="ion-ios7-search-strong" icon-off="ion-ios7-search" class="bg-color-three">
+                    <form class="bar item-input-inset">
                         <label class="item-input-wrapper">
                             <i class="icon ion-ios7-search placeholder-icon"></i>
-                            <input type="search" placeholder="Search" ng-model="username">
+                            <input autocorrect="off" autocomplete="off" autocapitalize="off" type="search" placeholder="Search" ng-model="username">
                         </label>
                         <button class="button button-clear" ng-click="searchUsers(username)">
                             Search
