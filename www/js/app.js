@@ -51,10 +51,19 @@ angular.module('starter', ['ionic'])
       friendshipCollection.fetch({
         success: function(friendshipCollection) {
           var currentUserFriends = [];
+          var currentUserFriendsObjects = [];
+
           friendshipCollection.each(function(friendship) {
+            var _user = {
+              id: friendship.attributes.toUser.id,
+              username: friendship.attributes.toUserUsername
+            };
+            currentUserFriendsObjects.push(_user);
             currentUserFriends.push(friendship.attributes.toUser.id);
           });
           $rootScope.currentUser.friends = currentUserFriends;
+          $rootScope.currentUser.friendsObjects = currentUserFriendsObjects;
+          console.log($rootScope.currentUser.friendsObjects);
         },
         error: function(userCollection, error) {
           console.log("Problem fetching friendship database.");
@@ -192,7 +201,7 @@ angular.module('starter', ['ionic'])
   $('body').addClass('hide-nav');
 })
 
-.controller('SendEvinceCtrl', function($scope, $state) {
+.controller('SendEvinceCtrl', function($scope, $state, $rootScope) {
   $('body').removeClass('hide-nav');
 })
 
@@ -268,6 +277,9 @@ angular.module('starter', ['ionic'])
     toUser.id = user.id;
     friendship.set('fromUser', $rootScope.currentUser);
     friendship.set('toUser', toUser);
+
+    friendship.set('toUserUsername', user.username);
+    friendship.set('fromUserUsername', $rootScope.currentUser.attributes.username);
     friendship.save(null, {
       success: function(object) {
         $rootScope.currentUser.friends.push(toUser.id);
