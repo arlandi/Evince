@@ -269,7 +269,7 @@ angular.module('starter', ['ionic'])
     ionic.DomUtil.ready(function() {
       $('.addfriends .tabs').css('top', $('#nav-bar').outerHeight());
       $('.addfriends .pane').css('top', $('#nav-bar').outerHeight() + $('.addfriends .tabs').outerHeight());
-      // $('.search-friends-content').css('top', $('#nav-bar').outerHeight() + $('.addfriends .tabs').outerHeight() + 44);
+      $('.search-friends-content').css('bottom', $('#nav-bar').outerHeight() + $('.addfriends .tabs').outerHeight());
     });
   }
 })
