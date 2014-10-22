@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+
+    <!-- compiled css output -->
+    <link href="css/ionic.app.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+    <script src="lib/jquery/dist/jquery.min.js"></script>
+    <script src="js/parse-1.3.js"></script>
+    <script src="js/app.js"></script>
+</head>
+
+<body ng-app="starter" animation="slide-left-right-ios7">
+
+    <ion-nav-bar id="nav-bar" class="bar-positive nav-title-slide-ios7">
+        <ion-nav-back-button class="button-icon ion-arrow-left-c">
+        </ion-nav-back-button>
+    </ion-nav-bar>
+
+    <ion-nav-view></ion-nav-view>
+
+    <!-- Sign In View -->
+    <script id="templates/splash.html" type="text/ng-template">
+        <ion-view class="splash">
+            <ion-content scroll="false">
+                <h1 class="splash-logo">* evince *</h1>
+            </ion-content>
+            <div class="bar bar-footer">
+                <a href="#/sign-in" class="footer-button evince-color-one">Log In</a>
+                <a href="#/sign-up" class="footer-button evince-color-two">Sign Up</a>
+            </div>
+        </ion-view>
+    </script>
+
+    <script type="text/ng-template" id="templates/sign-in.html">
+        <ion-view title="Log In">
+            <ion-content has-bouncing="false">
+                <form>
+                    <div class="list">
+                        <label class="item item-input item-floating-label">
+                            <span class="input-label">Username</span>
+                            <input autocorrect="off" autocomplete="off" autocapitalize="off" type="text" placeholder="Username" ng-model="user.username">
+                        </label>
+                        <label class="item item-input item-floating-label">
+                            <span class="input-label">Password</span>
+                            <input autocorrect="off" autocomplete="off" autocapitalize="off" type="password" placeholder="Password" ng-model="user.password">
+                        </label>
+                    </div>
+                    <span id="signInError" class="hidden button icon-left ion-alert button-clear button-assertive form-error">{{signInError}}</span>
+                    <div>
+                        <button id="signInButton" class="button button-block button-positive evince-button" ng-click="signIn(user)">
+                            Log In
+                        </button>
+                    </div>
+                </form>
+            </ion-content>
+        </ion-view>
+    </script>
+
+    <script type="text/ng-template" id="templates/sign-up.html">
+        <ion-view title="Sign Up">
+            <ion-content has-bouncing="false">
+                <form>
+                    <div class="list">
+                        <label class="item item-input item-floating-label">
+                            <span class="input-label">Email</span>
+                            <input autocorrect="off" autocomplete="off" autocapitalize="off" type="text" placeholder="Email" ng-model="user.email">
+                        </label>
+                        <label class="item item-input item-floating-label">
+                            <span class="input-label">Username</span>
+                            <input autocorrect="off" autocomplete="off" autocapitalize="off" type="text" placeholder="Username" ng-model="user.username">
+                        </label>
+                        <label class="item item-input item-floating-label">
+                            <span class="input-label">Password</span>
+                            <input autocorrect="off" autocomplete="off" autocapitalize="off" type="password" placeholder="Password" ng-model="user.password">
+                        </label>
+                    </div>
+                    <span id="signUpError" class="hidden button icon-left ion-alert button-clear button-assertive form-error">{{signUpError}}</span>
+                    <div>
+                        <button id="signUpButton" class="button button-full button-positive evince-button" ng-click="signUp(user)">
+                            Sign Up
+                        </button>
+                    </div>
+                </form>
+            </ion-content>
+        </ion-view>
+    </script>
+
+    <script id="templates/home.html" type="text/ng-template">
+        <ion-view>
+            <ion-slide-box on-slide-changed="slideChanged(index)">
+
+                <ion-slide class="home-page">
+                    <h1>evince</h1>
+                    <ul class="list evince-list">
+                        <li class="item color-one">* working *</li>
+                        <li class="item color-two">* excited *</li>
+                        <li class="item color-three">* night out *</li>
+                        <li class="item color-four">
+                            <div class="item item-input evince-input">
+                                <div class="icon ion-asterisk placeholder-icon"></div>
+                                <input ng-model="evinceMessage" type="text" placeholder="whatever">
+                                <div ng-class="{spin: evinceMessage}" class="icon ion-asterisk placeholder-icon" ng-click="evince(evinceMessage)"></div>
+                            </div>
+                        </li>
+                    </ul>
+                </ion-slide>
+
+                <ion-slide class="friends-page">
+                    <h1>friends
+                        <a href="#/addfriends" class="button button-icon icon ion-plus-round"></a>
+                    </h1>
+                    <p class="pane-title">You have no friends yet :(</p>
+                    <ion-content class="friends-page-content" has-bouncing="true">
+                        <ion-list>
+                            <ion-item ng-repeat="friend in friends">
+                                {{friend}}
+                            </ion-item>
+                        </ion-list>
+                    </ion-content>
+                </ion-slide>
+
+            </ion-slide-box>
+        </ion-view>
+    </script>
+
+    <script id="templates/addfriends.html" type="text/ng-template">
+        <ion-view title="Add Friends">
+            <ion-tabs class="tabs-positive tabs-icon-only addfriends">
+
+                <ion-tab title="Heart" icon-on="ion-ios7-heart" icon-off="ion-ios7-heart-outline" class="bg-color-one">
+                    <p class="pane-title">People that added you.</p>
+                </ion-tab>
+
+                <ion-tab title="Contacts" icon-on="ion-ios7-bookmarks" icon-off="ion-ios7-bookmarks-outline" class="bg-color-two">
+                    <p class="pane-title">Add Friends to contact to be implemented.</p>
+                </ion-tab>
+
+                <ion-tab title="Search" icon-on="ion-ios7-search-strong" icon-off="ion-ios7-search" class="bg-color-three">
+                    <form class="bar bar-header item-input-inset">
+                        <label class="item-input-wrapper">
+                            <i class="icon ion-ios7-search placeholder-icon"></i>
+                            <input type="search" placeholder="Search" ng-model="username">
+                        </label>
+                        <button class="button button-clear" ng-click="searchUsers(username)">
+                            Search
+                        </button>
+                    </form>
+                    <ion-content class="search-friends-content" has-bouncing="true">
+                        <ion-list>
+                            <ion-item ng-repeat="user in searchResults" class="item-icon-right" >
+                                {{user.username}}
+                                <i class="icon" ng-disabled="isFriends(user)" ng-class="{'ion-ios7-plus-outline' : !isFriends(user), 'ion-ios7-plus' : isFriends(user)}" ng-click="addUser(user)"></i>
+                            </ion-item>
+                        </ion-list>
+                    </ion-content>
+                </ion-tab>
+
+            </ion-tabs>
+        </ion-view>
+    </script>
+
+    <script id="templates/send-evince.html" type="text/ng-template">
+        <ion-view title="Send to">
+            <ion-content>
+            </ion-content>
+        </ion-view>
+    </script>
+
+</body>
+
+</html>

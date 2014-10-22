@@ -1,0 +1,199 @@
+h1 { font-weight: 600; }
+/*Home Page Styles*/
+.slider {
+  height: 100%;
+}
+
+.slider-slide {
+  background-color: #fff;
+  text-align: center;
+}
+
+.slider-pager {
+  /*display: none;*/
+}
+
+.home-page h1, .friends-page h1 {
+  background: #30cbd7;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 10px;
+  margin: 0;
+  padding: 10px;
+}
+
+.friends-page h1 a {
+  color: #fff;
+  float: right;
+  margin-left: -25px;
+  padding: 0;
+}
+
+.friends-page .button-block {
+
+}
+
+.friends-page-content {
+  top: 63px;
+}
+
+.pane-title {
+  font-weight: 600;
+  margin: 10px 20px;
+}
+
+.addfriends .tabs {
+  background: none;
+  color: black;
+  top: 42px;
+}
+
+.addfriends .pane {
+  padding-top: 93px;
+}
+
+.addfriends .tab-item .icon {
+  color: #fff;
+}
+
+.addfriends .tab-item {
+  opacity: 1;
+}
+
+.search-friends-content {
+  bottom: 0;
+  top: 137px;
+}
+
+.evince-list li {
+  border: 0;
+  font-size: 2em;
+  font-weight: 600;
+  padding: 25px;
+  text-transform: uppercase;
+}
+
+.color-one {
+  color: #f1c40f;
+}
+.bg-color-one {
+  background-color: #f1c40f !important;
+}
+
+.color-two {
+  color: #e74c3c;
+}
+.bg-color-two {
+  background-color: #e74c3c !important;
+}
+
+.color-three {
+  color: #8e44ad;
+}
+.bg-color-three {
+  background-color: #8e44ad !important;
+}
+
+.color-four {
+  color: #000;
+}
+.bg-color-four {
+  color: #000;
+}
+
+.item.evince-input {
+  border: 0;
+  color: #000;
+  padding: 0;
+}
+
+.item.evince-input .placeholder-icon {
+  color: #000;
+  display: block;
+  font-size: 1.5em;
+  height: 27px;
+  padding: 0;
+  width: 27px;
+}
+
+.item.evince-input input {
+  font-size: 1.5em;
+  font-weight: 600;
+  line-height: 1em;
+  margin: 0 1em;
+  max-width: 60%;
+  padding: 0;
+  text-align: center;
+}
+
+.spin {
+  -webkit-animation: spin 3s infinite linear;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+/*Splash Page Styles*/
+
+.splash-logo {
+  color: #fff;
+  font-weight: 600;
+  margin-top: 4em !important;
+  text-align: center;
+}
+
+.bar-footer {
+  display: inline-block;
+  height: auto;
+  padding: 0;
+  z-index: 12;
+}
+
+.footer-button {
+  color: #fff;
+  display: block;
+  font-size: 2em;
+  font-weight: 600;
+  padding: 30px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.evince-color-one {
+  background-color: #f1c40f;
+}
+
+.evince-color-two {
+  background-color: #e74c3c;
+}
+
+.evince-button {
+  border: 0;
+  border-radius: 0;
+}
+
+.hide-nav > #nav-bar {
+  display: none;
+}
+
+.splash {
+  background-color: #30cbd7;
+}
+
+/*Form Page Styles*/
+
+.form-error {
+  display: block !important;
+}
+
+.form-error:before {
+  float: none !important;
+  font-size: 0.9em !important;
+  padding-right: 0.5em !important;
+}
+
+.hidden {
+  display: none !important;
+}
