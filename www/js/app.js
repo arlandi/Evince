@@ -63,7 +63,6 @@ angular.module('starter', ['ionic'])
           });
           $rootScope.currentUser.friends = currentUserFriends;
           $rootScope.currentUser.friendsObjects = currentUserFriendsObjects;
-          console.log($rootScope.currentUser.friendsObjects);
         },
         error: function(userCollection, error) {
           console.log("Problem fetching friendship database.");
@@ -84,9 +83,9 @@ angular.module('starter', ['ionic'])
     $rootScope.currentUser = Parse.User.current();
 
     if ($rootScope.currentUser !== null) {
-      // $state.go('home');
+      $state.go('home');
 
-      if ( !$rootScope.currentUser.friends ) {
+      if (!$rootScope.currentUser.friends) {
         $rootScope.getCurrentUserFriends();
       }
     }
@@ -101,7 +100,7 @@ angular.module('starter', ['ionic'])
   $scope.signIn = function(user) {
     $('#signInError').addClass('hidden');
 
-    if ( !user || !user.username || !user.password) {
+    if (!user || !user.username || !user.password) {
       $scope.signInError = 'Please fill out all the fields.';
       $('#signInError').removeClass('hidden');
       return false;
@@ -141,7 +140,7 @@ angular.module('starter', ['ionic'])
   $scope.signUp = function(user) {
     $('#signUpError').addClass('hidden');
 
-    if ( !user || !user.email || !user.username || !user.password) {
+    if (!user || !user.email || !user.username || !user.password) {
       $scope.signUpError = 'Please fill out all the fields.';
       $('#signUpError').removeClass('hidden');
       return false;
@@ -184,15 +183,18 @@ angular.module('starter', ['ionic'])
   }
 })
 
-.controller('HomeCtrl', function($scope, $state) {
+.controller('HomeCtrl', function($scope, $state, $rootScope) {
   $('body').addClass('hide-nav');
 
-  $scope.friends = [];
+  if ($rootScope.currentUser) {
+    $rootScope.getCurrentUserFriends();
+  }
 
   $scope.evince = function(evinceMessage) {
-    if ( !evinceMessage ) {
+    if (!evinceMessage) {
       return;
     }
+    $rootScope.evinceMessage = evinceMessage;
     $state.go('sendevince');
   }
 })
@@ -201,21 +203,52 @@ angular.module('starter', ['ionic'])
   $('body').addClass('hide-nav');
 })
 
-.controller('SendEvinceCtrl', function($scope, $state, $rootScope) {
+.controller('SendEvinceCtrl', function($scope, $state, $rootScope, $ionicLoading) {
   $('body').removeClass('hide-nav');
+
+  $scope.friends = $rootScope.currentUser.friendsObjects;
+
+  $scope.sendEvince = function() {
+    var messageObject = Parse.Object.extend("Message");
+    var userObject = Parse.Object.extend("User");
+    var toSend = [];
+    $scope.friends.forEach(function(friend) {
+      if (friend.selected) {
+        var message = new messageObject();
+        var toUser = new userObject();
+        toUser.id = friend.id;
+        message.set('fromUser', $rootScope.currentUser);
+        message.set('toUser', toUser);
+        message.set('message', $rootScope.evinceMessage);
+        toSend.push(message);
+      }
+    });
+    Parse.Object.saveAll(toSend, {
+      success: function(objs) {
+        $ionicLoading.show({
+          template: 'Sent!',
+          duration: 1000
+        });
+        $state.go('home');
+      },
+      error: function(error) {
+        console.log(error);
+      }
+    });
+  }
 })
 
 .controller('AddFriendsCtrl', function($scope, $state, $rootScope, $ionicPopup) {
   $('body').removeClass('hide-nav');
 
-  if ( $rootScope.currentUser && !$rootScope.currentUser.friends ) {
+  if ($rootScope.currentUser && !$rootScope.currentUser.friends) {
     $rootScope.getCurrentUserFriends();
   }
 
   $scope.searchResults = [];
 
   $scope.searchUsers = function(username) {
-    if ( !username ) {
+    if (!username) {
       return;
     }
 
@@ -232,8 +265,8 @@ angular.module('starter', ['ionic'])
 
         if (userCollection.length === 0) {
           var alertPopup = $ionicPopup.alert({
-           title: 'No one with that username.'
-         });
+            title: 'No one with that username.'
+          });
         }
 
         userCollection.each(function(user) {
@@ -260,9 +293,9 @@ angular.module('starter', ['ionic'])
   }
 
   $scope.addOrRemove = function(user) {
-    if( $scope.isFriends(user) ) {
+    if ($scope.isFriends(user)) {
       $scope.removeFriend(user);
-    }else {
+    } else {
       $scope.addFriend(user);
     }
   }
@@ -283,7 +316,9 @@ angular.module('starter', ['ionic'])
     friendship.save(null, {
       success: function(object) {
         $rootScope.currentUser.friends.push(toUser.id);
-        setTimeout(function() { $rootScope.$apply(); });
+        setTimeout(function() {
+          $rootScope.$apply();
+        });
       },
       error: function(error) {}
     });
@@ -309,13 +344,19 @@ angular.module('starter', ['ionic'])
             var index = $rootScope.currentUser.friends.indexOf(user.id);
             if (index > -1) {
               $rootScope.currentUser.friends.splice(index, 1);
-              setTimeout(function() { $rootScope.$apply(); });
+              setTimeout(function() {
+                $rootScope.$apply();
+              });
             }
           },
-          error: function(object, error) { console.log(error); }
+          error: function(object, error) {
+            console.log(error);
+          }
         });
       },
-      error: function(error) { console.log(error); }
+      error: function(error) {
+        console.log(error);
+      }
     });
   }
 

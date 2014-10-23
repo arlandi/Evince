@@ -173,6 +173,19 @@ h1 { font-weight: 600; }
   background-color: #30cbd7;
 }
 
+.send-evince-content .bar-footer {
+  height: 65px;
+}
+
+.send-evince-content .bar-footer h1{
+  font-size: 2em;
+  padding: 10px;
+}
+
+.send-evince-content .has-footer {
+  bottom: 65px;
+}
+
 /*Form Page Styles*/
 
 .form-error {

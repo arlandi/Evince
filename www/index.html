@@ -162,7 +162,7 @@
                     </form>
                     <ion-content class="search-friends-content" has-bouncing="true">
                         <ion-list>
-                            <ion-item ng-repeat="user in searchResults" class="item-icon-right" >
+                            <ion-item ng-repeat="user in searchResults" class="item-icon-right">
                                 {{user.username}}
                                 <i class="icon" ng-class="{'ion-ios7-plus-outline' : !isFriends(user), 'ion-ios7-plus' : isFriends(user)}" ng-click="addOrRemove(user)"></i>
                             </ion-item>
@@ -175,9 +175,20 @@
     </script>
 
     <script id="templates/send-evince.html" type="text/ng-template">
-        <ion-view title="Send to">
-            <ion-content>
+        <ion-view class="send-evince-content" title="Send to">
+            <ion-content has-bouncing="true">
+                <ion-list>
+                    <ion-item ng-repeat="friend in friends" class="item-checkbox item-checkbox-right">
+                        <label class="checkbox">
+                            <input ng-model="friend.selected" ng-checked="friend.selected" type="checkbox">
+                        </label>
+                        {{friend.username}}
+                    </ion-item>
+                </ion-list>
             </ion-content>
+            <ion-footer-bar class="bar-positive" ng-click="sendEvince()" >
+                <h1 class="title">'vince It</h1>
+            </ion-footer-bar>
         </ion-view>
     </script>
 
