@@ -85,7 +85,7 @@ angular.module('starter', ['ionic', 'ngCordova'])
     $rootScope.currentUser = Parse.User.current();
 
     if ($rootScope.currentUser !== null) {
-      // $state.go('home');
+      $state.go('home');
 
       if (!$rootScope.currentUser.friends) {
         $rootScope.getCurrentUserFriends();
@@ -305,11 +305,12 @@ angular.module('starter', ['ionic', 'ngCordova'])
 .controller('AddFriendsCtrl', function($scope, $state, $rootScope, $ionicPopup) {
   $('body').removeClass('hide-nav');
 
-  if ($rootScope.currentUser && !$rootScope.currentUser.friends) {
+  if ($rootScope.currentUser) {
     $rootScope.getCurrentUserFriends();
   }
 
   $scope.searchResults = [];
+  $scope.othersAdded = [];
 
   $scope.searchUsers = function(username) {
     if (!username) {
@@ -425,7 +426,43 @@ angular.module('starter', ['ionic', 'ngCordova'])
     });
   }
 
-  $scope.onTabSelected = function() {
+  $scope.getOthersAdded = function() {
+
+    $scope.othersAdded = [];
+    var friendshipObject = Parse.Object.extend("Friendship");
+    var friendshipCollectionDef = Parse.Collection.extend({
+      model: friendshipObject,
+      query: (new Parse.Query(friendshipObject).equalTo('toUser', $rootScope.currentUser))
+    });
+    var friendshipCollection = new friendshipCollectionDef();
+
+    console.log('asdfasdfasdfasdfasdf');
+
+
+    friendshipCollection.fetch({
+      success: function(friendshipCollection) {
+        friendshipCollection.each(function(friendship) {
+          var _user = {
+            id: friendship.attributes.fromUser.id,
+            username: friendship.attributes.fromUserUsername
+          };
+          console.log(_user);
+          $scope.othersAdded.push(_user);
+        });
+      },
+      error: function(userCollection, error) {
+        console.log("Problem fetching friendship database.", error);
+      }
+    });
+  }
+
+  $scope.onTabSelected = function(tab) {
+    switch (tab) {
+      case 'othersAdded':
+        $scope.getOthersAdded();
+        break;
+    }
+
     ionic.DomUtil.ready(function() {
       $('.addfriends .tabs').css('top', $('#nav-bar').outerHeight());
       $('.addfriends .pane').css('top', $('#nav-bar').outerHeight() + $('.addfriends .tabs').outerHeight());
