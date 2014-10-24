@@ -280,6 +280,7 @@ angular.module('starter', ['ionic', 'ngCordova'])
         var toUser = new userObject();
         toUser.id = friend.id;
         message.set('fromUser', $rootScope.currentUser);
+        message.set('fromUserUsername', $rootScope.currentUser.attributes.username);
         message.set('toUser', toUser);
         message.set('message', $rootScope.evinceMessage);
         toSend.push(message);
