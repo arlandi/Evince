@@ -37,41 +37,9 @@ angular.module('starter', ['ionic', 'ngCordova'])
   $urlRouterProvider.otherwise('/splash');
 })
 
-.run(function($ionicPlatform, $rootScope, $state, $cordovaPush) {
+.run(function($ionicPlatform, $rootScope, $state, $cordovaPush, $ionicPopup) {
 
   $ionicPlatform.ready(function() {
-
-    var pushNotification;
-    pushNotification = window.plugins.pushNotification;
-
-    pushNotification.register(
-      tokenHandler,
-      errorHandler, {
-        "badge": "true",
-        "sound": "true",
-        "alert": "true",
-        "ecb": "onNotificationAPN"
-      });
-
-    function tokenHandler(result) {
-      console.log('device token = ' + result);
-    }
-
-    // iOS
-    function onNotificationAPN(event) {
-      if (event.alert) {
-        navigator.notification.alert(event.alert);
-      }
-
-      if (event.sound) {
-        var snd = new Media(event.sound);
-        snd.play();
-      }
-
-      if (event.badge) {
-        pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
-      }
-    }
 
     $rootScope.getCurrentUserFriends = function() {
       var friendshipObject = Parse.Object.extend("Friendship");
@@ -125,6 +93,54 @@ angular.module('starter', ['ionic', 'ngCordova'])
 
     // Disable Auto Scroll on Input tap
     cordova.plugins.Keyboard.disableScroll(true);
+
+    // Push
+    var pushNotification;
+    pushNotification = window.plugins.pushNotification;
+    pushNotification.register(
+      tokenHandler,
+      errorHandler, {
+        "badge": "true",
+        "sound": "true",
+        "alert": "true",
+        "ecb": "onNotificationAPN"
+      });
+
+    function tokenHandler(token) {
+      var installationObject = Parse.Object.extend("_Installation");
+      var installation = new installationObject();
+      installation.set('deviceToken', token);
+      installation.set('deviceType', 'ios');
+      installation.set('userID', $rootScope.currentUser.id);
+      installation.set('username', $rootScope.currentUser.attributes.username);
+      installation.set('appName', 'Evince');
+      installation.set('version', '1.0');
+      console.log(installation);
+      installation.save(null, {
+        success: function(object) {
+          console.log(object);
+        },
+        error: function(error) {}
+      });
+    }
+
+    // iOS
+    function onNotificationAPN(event) {
+      if (event.alert) {
+        var alertPopup = $ionicPopup.alert({
+          title: 'No one with that username.'
+        });
+      }
+
+      if (event.sound) {
+        var snd = new Media(event.sound);
+        snd.play();
+      }
+
+      if (event.badge) {
+        // pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
+      }
+    }
 
   });
 })
@@ -249,6 +265,7 @@ angular.module('starter', ['ionic', 'ngCordova'])
     var toSend = [];
     $scope.friends.forEach(function(friend) {
       if (friend.selected) {
+        // Save Message Array Build
         var message = new messageObject();
         var toUser = new userObject();
         toUser.id = friend.id;
