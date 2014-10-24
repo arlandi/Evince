@@ -64,6 +64,7 @@ angular.module('starter', ['ionic', 'ngCordova'])
           });
           $rootScope.currentUser.friends = currentUserFriends;
           $rootScope.currentUser.friendsObjects = currentUserFriendsObjects;
+          $rootScope.$broadcast('fetched:currentFriends');
         },
         error: function(userCollection, error) {
           console.log("Problem fetching friendship database.");
@@ -237,9 +238,18 @@ angular.module('starter', ['ionic', 'ngCordova'])
 .controller('HomeCtrl', function($scope, $state, $rootScope, $cordovaPush) {
   $('body').addClass('hide-nav');
 
-  if ($rootScope.currentUser) {
-    $rootScope.getCurrentUserFriends();
-  }
+  $scope.friends = [];
+
+  $scope.$on('fetched:currentFriends', function(event) {
+    $scope.friends = $rootScope.currentUser.friendsObjects;
+    if ($scope.friends.length) {
+      $('.friends-page .pane-title').css('display', 'none');
+    }
+  });
+
+  ionic.DomUtil.ready(function() {
+    $('.friends-page-content').css('top', $('.friends-page-header').outerHeight());
+  });
 
   $scope.evince = function(evinceMessage) {
     if (!evinceMessage) {

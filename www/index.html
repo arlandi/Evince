@@ -122,14 +122,14 @@
                 </ion-slide>
 
                 <ion-slide class="friends-page">
-                    <h1>friends
+                    <h1 class="friends-page-header">friends
                         <a href="#/addfriends" class="button button-icon icon ion-plus-round"></a>
                     </h1>
                     <p class="pane-title">You have no friends yet :(</p>
                     <ion-content class="friends-page-content" has-bouncing="true">
                         <ion-list>
                             <ion-item ng-repeat="friend in friends">
-                                {{friend}}
+                                {{friend.username}}
                             </ion-item>
                         </ion-list>
                     </ion-content>
@@ -187,7 +187,7 @@
                     </ion-item>
                 </ion-list>
             </ion-content>
-            <ion-footer-bar class="bar-positive" ng-click="sendEvince()" >
+            <ion-footer-bar class="bar-positive" ng-click="sendEvince()">
                 <h1 class="title">'vince It</h1>
             </ion-footer-bar>
         </ion-view>
