@@ -242,10 +242,11 @@ angular.module('starter', ['ionic', 'ngCordova'])
 
   $scope.$on('fetched:currentFriends', function(event) {
     $scope.friends = $rootScope.currentUser.friendsObjects;
-    if ($scope.friends.length) {
-      $('.friends-page .pane-title').css('display', 'none');
-    }
   });
+
+  if ($rootScope.currentUser) {
+    $rootScope.getCurrentUserFriends();
+  }
 
   ionic.DomUtil.ready(function() {
     $('.friends-page-content').css('top', $('.friends-page-header').outerHeight());
