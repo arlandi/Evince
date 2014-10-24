@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "Evince": {
+            "applicationId": "uzc2fQIZzhFY1GasSyx85TjTPki4lxi5Gt9cDQTi", 
+            "masterKey": "hqT9gAZaS0kGZXUOSiHtNoSpZIG5bFU29tU7enjO"
+        }, 
+        "_default": {
+            "link": "Evince"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.3.1"
+    }
+}
