@@ -16,7 +16,7 @@ Parse.Cloud.afterSave("Message", function(request) {
   Parse.Push.send({
     where: pushQuery, // Set our Installation query
     data: {
-      alert: fromUser.get('username') + ": * " + message + " *",
+      alert: request.object.get('fromUserUsername') + ": * " + message + " *",
       sound: "default"
     }
   }, {
