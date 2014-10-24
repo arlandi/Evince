@@ -180,6 +180,7 @@ h1 { font-weight: 600; }
 .send-evince-content .bar-footer h1{
   font-size: 2em;
   padding: 10px;
+  text-transform: uppercase;
 }
 
 .send-evince-content .has-footer {

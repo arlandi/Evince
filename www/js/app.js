@@ -1,4 +1,4 @@
-angular.module('starter', ['ionic'])
+angular.module('starter', ['ionic', 'ngCordova'])
 
 .config(function($stateProvider, $urlRouterProvider) {
 
@@ -37,9 +37,42 @@ angular.module('starter', ['ionic'])
   $urlRouterProvider.otherwise('/splash');
 })
 
-.run(function($ionicPlatform, $rootScope, $state) {
+.run(function($ionicPlatform, $rootScope, $state, $cordovaPush) {
 
   $ionicPlatform.ready(function() {
+
+    var pushNotification;
+    pushNotification = window.plugins.pushNotification;
+
+    pushNotification.register(
+      tokenHandler,
+      errorHandler, {
+        "badge": "true",
+        "sound": "true",
+        "alert": "true",
+        "ecb": "onNotificationAPN"
+      });
+
+    function tokenHandler(result) {
+      console.log('device token = ' + result);
+    }
+
+    // iOS
+    function onNotificationAPN(event) {
+      if (event.alert) {
+        navigator.notification.alert(event.alert);
+      }
+
+      if (event.sound) {
+        var snd = new Media(event.sound);
+        snd.play();
+      }
+
+      if (event.badge) {
+        pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
+      }
+    }
+
     $rootScope.getCurrentUserFriends = function() {
       var friendshipObject = Parse.Object.extend("Friendship");
       var friendshipCollectionDef = Parse.Collection.extend({
@@ -83,14 +116,16 @@ angular.module('starter', ['ionic'])
     $rootScope.currentUser = Parse.User.current();
 
     if ($rootScope.currentUser !== null) {
-      $state.go('home');
+      // $state.go('home');
 
       if (!$rootScope.currentUser.friends) {
         $rootScope.getCurrentUserFriends();
       }
     }
 
+    // Disable Auto Scroll on Input tap
     cordova.plugins.Keyboard.disableScroll(true);
+
   });
 })
 
@@ -183,7 +218,7 @@ angular.module('starter', ['ionic'])
   }
 })
 
-.controller('HomeCtrl', function($scope, $state, $rootScope) {
+.controller('HomeCtrl', function($scope, $state, $rootScope, $cordovaPush) {
   $('body').addClass('hide-nav');
 
   if ($rootScope.currentUser) {
@@ -281,6 +316,7 @@ angular.module('starter', ['ionic'])
         setTimeout(function() {
           $scope.$apply();
         });
+        cordova.plugins.Keyboard.close();
       },
       error: function(userCollection, error) {
         console.log("Problem fetching users database.");

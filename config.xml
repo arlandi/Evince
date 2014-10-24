@@ -20,4 +20,7 @@
         <param name="ios-package" value="CDVInAppBrowser" />
         <param name="android-package" value="org.apache.cordova.InAppBrowser" />
     </feature>
+    <feature name="PushPlugin">
+	  <param name="ios-package" value="PushPlugin" />
+	</feature>
 </widget>
