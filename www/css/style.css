@@ -92,6 +92,10 @@ h1 { font-weight: 600; }
   color: #000;
 }
 
+.bg-color-five {
+  background-color: #3498db;
+}
+
 .item.evince-input {
   border: 0;
   color: #000;
@@ -170,7 +174,9 @@ h1 { font-weight: 600; }
 }
 
 .splash {
+  background-image: url('../img/evince_intro_bg.jpg');
   background-color: #30cbd7;
+  background-size: auto 80%;
 }
 
 .send-evince-content .bar-footer {

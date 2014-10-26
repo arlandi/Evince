@@ -72,13 +72,45 @@ angular.module('starter', ['ionic', 'ngCordova'])
       });
     }
 
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
+    $rootScope.getLatestMessages = function() {
+      var messageObject = Parse.Object.extend("Message");
+      var messageCollectionDef = Parse.Collection.extend({
+        model: messageObject,
+        query: (new Parse.Query(messageObject).descending("createdAt").equalTo('fromUser', $rootScope.currentUser).limit(3))
+      });
+      var messageCollection = new messageCollectionDef();
+
+      messageCollection.fetch({
+        success: function(messageCollection) {
+          var currentUserLatestMessages = [{
+            message: 'working'
+          }, {
+            message: 'excited'
+          }, {
+            message: 'night out'
+          }];
+
+          messageCollection.each(function(message) {
+            var _message = {
+              message: message.attributes.message
+            };
+            currentUserLatestMessages.unshift(_message);
+          });
+          $rootScope.currentUser.latestMessages = currentUserLatestMessages;
+          $rootScope.$broadcast('fetched:latestMessages');
+        },
+        error: function(userCollection, error) {
+          console.log("Problem fetching message database.");
+        }
+      });
+    }
+
     if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+      cordova.plugins.Keyboard.disableScroll(true);
     }
     if (window.StatusBar) {
-      StatusBar.styleDefault();
+      StatusBar.styleLightContent();
     }
     Parse.initialize("uzc2fQIZzhFY1GasSyx85TjTPki4lxi5Gt9cDQTi", "K0NlKEQo69SYJE1XIrUWd17o4MjTEsLqdiFEdzC7");
 
@@ -89,57 +121,7 @@ angular.module('starter', ['ionic', 'ngCordova'])
 
       if (!$rootScope.currentUser.friends) {
         $rootScope.getCurrentUserFriends();
-      }
-    }
-
-    // Disable Auto Scroll on Input tap
-    cordova.plugins.Keyboard.disableScroll(true);
-
-    // Push
-    var pushNotification;
-    pushNotification = window.plugins.pushNotification;
-    pushNotification.register(
-      tokenHandler,
-      errorHandler, {
-        "badge": "true",
-        "sound": "true",
-        "alert": "true",
-        "ecb": "onNotificationAPN"
-      });
-
-    function tokenHandler(token) {
-      var installationObject = Parse.Object.extend("_Installation");
-      var installation = new installationObject();
-      installation.set('deviceToken', token);
-      installation.set('deviceType', 'ios');
-      installation.set('userID', $rootScope.currentUser.id);
-      installation.set('username', $rootScope.currentUser.attributes.username);
-      installation.set('appName', 'Evince');
-      installation.set('version', '1.0');
-      console.log(installation);
-      installation.save(null, {
-        success: function(object) {
-          console.log(object);
-        },
-        error: function(error) {}
-      });
-    }
-
-    // iOS
-    function onNotificationAPN(event) {
-      if (event.alert) {
-        var alertPopup = $ionicPopup.alert({
-          title: 'No one with that username.'
-        });
-      }
-
-      if (event.sound) {
-        var snd = new Media(event.sound);
-        snd.play();
-      }
-
-      if (event.badge) {
-        // pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
+        $rootScope.getLatestMessages();
       }
     }
 
@@ -235,7 +217,7 @@ angular.module('starter', ['ionic', 'ngCordova'])
   }
 })
 
-.controller('HomeCtrl', function($scope, $state, $rootScope, $cordovaPush) {
+.controller('HomeCtrl', function($scope, $state, $rootScope, $cordovaPush, $cordovaDevice, $ionicPopup) {
   $('body').addClass('hide-nav');
 
   $scope.friends = [];
@@ -244,8 +226,17 @@ angular.module('starter', ['ionic', 'ngCordova'])
     $scope.friends = $rootScope.currentUser.friendsObjects;
   });
 
+  $scope.$on('fetched:latestMessages', function(event) {
+    $scope.latestMessages = $rootScope.currentUser.latestMessages;
+    setTimeout(function() {
+      $scope.$apply();
+    });
+    $('#messageList').removeClass('hidden');
+  });
+
   if ($rootScope.currentUser) {
     $rootScope.getCurrentUserFriends();
+    $rootScope.getLatestMessages();
   }
 
   ionic.DomUtil.ready(function() {
@@ -259,6 +250,60 @@ angular.module('starter', ['ionic', 'ngCordova'])
     $rootScope.evinceMessage = evinceMessage;
     $state.go('sendevince');
   }
+
+  // In App Notification HAndler
+  onNotificationAPN = function(event) {
+    if (event.alert) {
+      var alertPopup = $ionicPopup.alert({
+        title: event.alert
+      });
+    }
+
+    if (event.sound) {
+      var snd = new Media(event.sound);
+      snd.play();
+    }
+
+    if (event.badge) {
+      // pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
+    }
+  }
+
+  var iosConfig = {
+    "badge": "true",
+    "sound": "true",
+    "alert": "true",
+    "ecb": "onNotificationAPN"
+  };
+
+  if (window.cordova) {
+    $cordovaPush.register(iosConfig).then(function(result) {
+      var installationObject = Parse.Object.extend("_Installation");
+      var installation = new installationObject();
+      installation.set('deviceToken', result);
+      installation.set('deviceType', 'ios');
+      installation.set('model', $cordovaDevice.getModel());
+      installation.set('osVersion', $cordovaDevice.getVersion());
+      installation.set('userID', $rootScope.currentUser.id);
+      installation.set('username', $rootScope.currentUser.attributes.username);
+      installation.set('appName', 'Evince');
+      installation.set('version', '1.0');
+
+      console.log('Saving installation file');
+      console.log(installation);
+      installation.save(null, {
+        success: function(object) {
+          console.log(object);
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    }, function(err) {
+      console.log(err);
+    });
+  }
+
 })
 
 .controller('SplashCtrl', function($scope, $state) {
@@ -287,18 +332,22 @@ angular.module('starter', ['ionic', 'ngCordova'])
         toSend.push(message);
       }
     });
-    Parse.Object.saveAll(toSend, {
-      success: function(objs) {
-        $ionicLoading.show({
-          template: 'Sent!',
-          duration: 1000
-        });
-        $state.go('home');
-      },
-      error: function(error) {
-        console.log(error);
-      }
-    });
+
+    if (toSend.length) {
+      Parse.Object.saveAll(toSend, {
+        success: function(objs) {
+          $ionicLoading.show({
+            template: 'Sent!',
+            duration: 1000
+          });
+          $state.go('home');
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    }
+
   }
 })
 
@@ -436,9 +485,6 @@ angular.module('starter', ['ionic', 'ngCordova'])
     });
     var friendshipCollection = new friendshipCollectionDef();
 
-    console.log('asdfasdfasdfasdfasdf');
-
-
     friendshipCollection.fetch({
       success: function(friendshipCollection) {
         friendshipCollection.each(function(friendship) {
@@ -446,8 +492,10 @@ angular.module('starter', ['ionic', 'ngCordova'])
             id: friendship.attributes.fromUser.id,
             username: friendship.attributes.fromUserUsername
           };
-          console.log(_user);
           $scope.othersAdded.push(_user);
+          setTimeout(function() {
+            $scope.$apply();
+          });
         });
       },
       error: function(userCollection, error) {

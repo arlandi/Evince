@@ -107,10 +107,10 @@
 
                 <ion-slide class="home-page">
                     <h1>evince</h1>
-                    <ul class="list evince-list">
-                        <li class="item color-one">* working *</li>
-                        <li class="item color-two">* excited *</li>
-                        <li class="item color-three">* night out *</li>
+                    <ul id="messageList" class="list evince-list hidden">
+                        <li class="item color-one" ng-click="evince(latestMessages[0].message)">* <span ng-bind="latestMessages[0].message" ></span> *</li>
+                        <li class="item color-two" ng-click="evince(latestMessages[1].message)">* <span ng-bind="latestMessages[1].message" ></span> *</li>
+                        <li class="item color-three" ng-click="evince(latestMessages[2].message)">* <span ng-bind="latestMessages[2].message" ></span> *</li>
                         <li class="item color-four">
                             <div class="item item-input evince-input">
                                 <div class="icon ion-asterisk placeholder-icon"></div>
@@ -143,7 +143,7 @@
         <ion-view title="Add Friends">
             <ion-tabs class="tabs-positive tabs-icon-only addfriends">
 
-                <ion-tab on-select="onTabSelected('othersAdded')" title="Heart" icon-on="ion-ios7-heart" icon-off="ion-ios7-heart-outline" class="bg-color-one">
+                <ion-tab on-select="onTabSelected('othersAdded')" title="Heart" icon-on="ion-ios7-heart" icon-off="ion-ios7-heart-outline" class="bg-color-three">
 	                <p class="pane-title">People who added you:</p>
                     <ion-content class="others-added-content" has-bouncing="true">
                         <ion-list>
@@ -155,11 +155,11 @@
                     </ion-content>
                 </ion-tab>
 
-                <ion-tab on-select="onTabSelected('contacts')" title="Contacts" icon-on="ion-ios7-bookmarks" icon-off="ion-ios7-bookmarks-outline" class="bg-color-two">
+                <ion-tab on-select="onTabSelected('contacts')" title="Contacts" icon-on="ion-ios7-bookmarks" icon-off="ion-ios7-bookmarks-outline" class="bg-color-one">
                     <p class="pane-title">Add Friends to contact to be implemented.</p>
                 </ion-tab>
 
-                <ion-tab on-select="onTabSelected('searchUsers')" title="Search" icon-on="ion-ios7-search-strong" icon-off="ion-ios7-search" class="bg-color-three">
+                <ion-tab on-select="onTabSelected('searchUsers')" title="Search" icon-on="ion-ios7-search-strong" icon-off="ion-ios7-search" class="bg-color-five">
                     <form class="bar item-input-inset">
                         <label class="item-input-wrapper">
                             <i class="icon ion-ios7-search placeholder-icon"></i>
