@@ -56,6 +56,10 @@ h1 { font-weight: 600; }
   top: 44px !important;
 }
 
+ul.evince-list {
+  text-align: center;
+}
+
 .evince-list li {
   border: 0;
   font-size: 2em;
@@ -105,18 +109,21 @@ h1 { font-weight: 600; }
 .item.evince-input .placeholder-icon {
   color: #000;
   display: block;
-  font-size: 1.5em;
+  font-size: 1.2em;
   height: 27px;
   padding: 0;
   width: 27px;
+}
+
+.item.evince-input .placeholder-icon.asterisk {
+  font-size: 1.9em;
+  padding: 6px;
 }
 
 .item.evince-input input {
   font-size: 1.5em;
   font-weight: 600;
   line-height: 1em;
-  margin: 0 1em;
-  max-width: 60%;
   padding: 0;
   text-align: center;
 }

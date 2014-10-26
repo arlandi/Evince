@@ -241,6 +241,8 @@ angular.module('starter', ['ionic', 'ngCordova'])
 
   ionic.DomUtil.ready(function() {
     $('.friends-page-content').css('top', $('.friends-page-header').outerHeight());
+    $('.evince-list-content').css('top', $('.friends-page-header').outerHeight());
+    cordova.plugins.Keyboard.disableScroll(false);
   });
 
   $scope.evince = function(evinceMessage) {

@@ -107,25 +107,30 @@
 
                 <ion-slide class="home-page">
                     <h1>evince</h1>
-                    <ul id="messageList" class="list evince-list hidden">
-                        <li class="item color-one" ng-click="evince(latestMessages[0].message)">* <span ng-bind="latestMessages[0].message" ></span> *</li>
-                        <li class="item color-two" ng-click="evince(latestMessages[1].message)">* <span ng-bind="latestMessages[1].message" ></span> *</li>
-                        <li class="item color-three" ng-click="evince(latestMessages[2].message)">* <span ng-bind="latestMessages[2].message" ></span> *</li>
-                        <li class="item color-four">
-                            <div class="item item-input evince-input">
-                                <div class="icon ion-asterisk placeholder-icon"></div>
-                                <input ng-model="evinceMessage" type="text" placeholder="whatever">
-                                <div ng-class="{spin: evinceMessage}" class="icon ion-asterisk placeholder-icon" ng-click="evince(evinceMessage)"></div>
-                            </div>
-                        </li>
-                    </ul>
+                    <ion-content class="evince-list-content" >
+                        <ul id="messageList" class="list evince-list hidden">
+                            <li class="item color-one" ng-click="evince(latestMessages[0].message)">*
+                                <span ng-bind="latestMessages[0].message"></span>*</li>
+                            <li class="item color-two" ng-click="evince(latestMessages[1].message)">*
+                                <span ng-bind="latestMessages[1].message"></span>*</li>
+                            <li class="item color-three" ng-click="evince(latestMessages[2].message)">*
+                                <span ng-bind="latestMessages[2].message"></span>*</li>
+                            <li class="item color-four">
+                                <div class="item item-input evince-input row">
+                                    <div class="placeholder-icon asterisk col">*</div>
+                                    <input class=" col" ng-model="evinceMessage" type="text" placeholder="whatever" maxlength="16">
+                                    <div class="placeholder-icon asterisk col" ng-class="{spin: evinceMessage}" ng-click="evince(evinceMessage)">*</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </ion-content>
                 </ion-slide>
 
                 <ion-slide class="friends-page">
                     <h1 class="friends-page-header">friends
                         <a href="#/addfriends" class="button button-icon icon ion-plus-round"></a>
                     </h1>
-                    <p class="pane-title" ng-hide="friends" >You have no friends yet.</p>
+                    <p class="pane-title" ng-hide="friends">You have no friends yet.</p>
                     <ion-content class="friends-page-content" has-bouncing="true">
                         <ion-list>
                             <ion-item ng-repeat="friend in friends">
@@ -144,7 +149,7 @@
             <ion-tabs class="tabs-positive tabs-icon-only addfriends">
 
                 <ion-tab on-select="onTabSelected('othersAdded')" title="Heart" icon-on="ion-ios7-heart" icon-off="ion-ios7-heart-outline" class="bg-color-three">
-	                <p class="pane-title">People who added you:</p>
+                    <p class="pane-title">People who added you:</p>
                     <ion-content class="others-added-content" has-bouncing="true">
                         <ion-list>
                             <ion-item ng-repeat="user in othersAdded" class="item-icon-right">
