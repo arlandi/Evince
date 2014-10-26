@@ -83,11 +83,15 @@ angular.module('starter', ['ionic', 'ngCordova'])
       messageCollection.fetch({
         success: function(messageCollection) {
           var currentUserLatestMessages = [{
-            message: 'working'
+            message: 'Working'
           }, {
-            message: 'excited'
+            message: 'Excited'
           }, {
-            message: 'night out'
+            message: 'Night Out'
+          }, {
+            message: 'Gobble Gobble'
+          }, {
+            message: 'Evincible'
           }];
 
           messageCollection.each(function(message) {

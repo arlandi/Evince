@@ -65,7 +65,10 @@ ul.evince-list {
   font-size: 2em;
   font-weight: 600;
   padding: 25px;
-  text-transform: uppercase;
+}
+
+.evince-list li span{
+  margin-right: 7px;
 }
 
 .color-one {
