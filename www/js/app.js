@@ -72,16 +72,29 @@ angular.module('starter', ['ionic', 'ngCordova'])
       });
     }
 
+    Array.prototype.unique = function() {
+      var o = {},
+        i, l = this.length,
+        r = [];
+      for (i = 0; i < l; i += 1) o[this[i]] = this[i];
+      for (i in o) r.push(o[i]);
+      return r;
+    };
+
     $rootScope.getLatestMessages = function() {
       var messageObject = Parse.Object.extend("Message");
       var messageCollectionDef = Parse.Collection.extend({
         model: messageObject,
-        query: (new Parse.Query(messageObject).descending("createdAt").equalTo('fromUser', $rootScope.currentUser).limit(3))
+        query: (new Parse.Query(messageObject).descending("createdAt").equalTo('fromUser', $rootScope.currentUser).limit(100))
       });
       var messageCollection = new messageCollectionDef();
 
       messageCollection.fetch({
         success: function(messageCollection) {
+          var arr = $.map(messageCollection.models, function(o) {
+            return o.attributes.message;
+          })
+          arr = arr.unique();
           var currentUserLatestMessages = [{
             message: 'Working'
           }, {
@@ -94,9 +107,9 @@ angular.module('starter', ['ionic', 'ngCordova'])
             message: 'Evincible'
           }];
 
-          messageCollection.each(function(message) {
+          arr.forEach(function(message) {
             var _message = {
-              message: message.attributes.message
+              message: message
             };
             currentUserLatestMessages.unshift(_message);
           });
@@ -225,6 +238,7 @@ angular.module('starter', ['ionic', 'ngCordova'])
   $('body').addClass('hide-nav');
 
   $scope.friends = [];
+  $scope.evinceMessage = '';
 
   $scope.$on('fetched:currentFriends', function(event) {
     $scope.friends = $rootScope.currentUser.friendsObjects;
