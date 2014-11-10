@@ -122,6 +122,19 @@ angular.module('starter', ['ionic', 'ngCordova'])
       });
     }
 
+    $rootScope.getCurrentUser = function() {
+      $rootScope.currentUser = Parse.User.current();
+
+      if ($rootScope.currentUser !== null) {
+        $state.go('home');
+
+        if (!$rootScope.currentUser.friends) {
+          $rootScope.getCurrentUserFriends();
+          $rootScope.getLatestMessages();
+        }
+      }
+    }
+
     if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
@@ -131,16 +144,7 @@ angular.module('starter', ['ionic', 'ngCordova'])
     }
     Parse.initialize("uzc2fQIZzhFY1GasSyx85TjTPki4lxi5Gt9cDQTi", "K0NlKEQo69SYJE1XIrUWd17o4MjTEsLqdiFEdzC7");
 
-    $rootScope.currentUser = Parse.User.current();
-
-    if ($rootScope.currentUser !== null) {
-      $state.go('home');
-
-      if (!$rootScope.currentUser.friends) {
-        $rootScope.getCurrentUserFriends();
-        $rootScope.getLatestMessages();
-      }
-    }
+    $rootScope.getCurrentUser();
 
   });
 })
@@ -326,8 +330,122 @@ angular.module('starter', ['ionic', 'ngCordova'])
 
 })
 
-.controller('SplashCtrl', function($scope, $state) {
+.controller('SplashCtrl', function($scope, $state, $cordovaFacebook, $rootScope, $ionicPopup) {
   $('body').addClass('hide-nav');
+
+  var permissions = ["public_profile", "email", "user_friends"];
+
+  $scope.data = {
+    username: "",
+    error: ""
+  }
+
+  $scope.facebookLogIn = function() {
+
+    $cordovaFacebook.getLoginStatus()
+      .then(function(result) {
+        if (result.status === 'connected') {
+
+          // User already connected with facebook, log in with parse as existing user
+          $scope.parseFacebookLogIn(result, false);
+        } else {
+
+          // User has not authenticated app with facebook, request permission then create parse user
+          $scope.facebookRequestPermission();
+        }
+      }, function(error) {
+        console.log(error);
+      });
+  }
+
+  $scope.facebookRequestPermission = function() {
+    $cordovaFacebook.login(permissions)
+      .then(function(result) {
+        if (result.status === 'connected') {
+          $scope.parseFacebookLogIn(result, true);
+        }
+      }, function(error) {
+        console.log(error);
+      });
+  }
+
+  $scope.parseFacebookLogIn = function(result, newUser) {
+
+    var now = moment();
+    now.add(result.authResponse.expiresIn, 'seconds');
+    var expiration_date = now.format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';
+
+    var facebookAuthData = {
+      "id": result.authResponse.userID + "",
+      "access_token": result.authResponse.accessToken,
+      "expiration_date": expiration_date
+    }
+
+    Parse.FacebookUtils.logIn(facebookAuthData, {
+      success: function(_user) {
+        console.log(_user);
+
+        if (newUser) {
+
+          var myPopup = $ionicPopup.show({
+            template: '<input autocorrect="off" autocomplete="off" autocapitalize="off" type="text" ng-model="data.username">{{data.error}}',
+            title: 'Enter your username',
+            scope: $scope,
+            buttons: [{
+              text: '<b>Save</b>',
+              type: 'button-positive',
+              onTap: function(e) {
+                $scope.data.error = '';
+                console.log('tapped');
+                console.log($scope.data.username);
+                if (!$scope.data.username) {
+                  e.preventDefault();
+                } else {
+                  console.log('checking for ' + $scope.data.username);
+                  // Check if username exists
+                  var userObject = Parse.Object.extend("User");
+                  var query = new Parse.Query(userObject);
+                  query.equalTo("username", $scope.data.username.toLowerCase());
+                  query.count({
+                    success: function(count) {
+                      if (count) {
+                        e.preventDefault();
+                        console.log('username exists');
+                        $scope.data.error = 'Username already exists';
+                      } else {
+                        console.log('username unique');
+                        // username is unique
+                        _user.set('username', $scope.data.username.toLowerCase());
+                        _user.save(null, {
+                          success: function(object) {
+                            console.log('username saved');
+                            $rootScope.getCurrentUser();
+                          },
+                          error: function(error) {
+                            console.log(error);
+                          }
+                        });
+                      }
+                    },
+                    error: function(error) {
+                      console.log(error);
+                    }
+                  });
+                }
+              }
+            }, ]
+          });
+        } else {
+          $rootScope.getCurrentUser();
+        }
+
+      },
+      error: function(error) {
+        console.log(error);
+      }
+    });
+  }
+
 })
 
 .controller('SendEvinceCtrl', function($scope, $state, $rootScope, $ionicLoading) {

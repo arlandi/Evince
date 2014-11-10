@@ -1,5 +1,9 @@
 h1 { font-weight: 600; }
 /*Home Page Styles*/
+.facebook-color {
+  background: #3B5998;
+}
+
 .slider {
   height: 100%;
 }
