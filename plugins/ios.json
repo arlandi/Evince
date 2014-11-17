@@ -71,6 +71,10 @@
                         {
                             "xml": "<access origin=\"https://*.akamaihd.net\" />",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"ProgressIndicator\"><param name=\"ios-package\" value=\"ProgressIndicator\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -164,6 +168,9 @@
         "com.phonegap.plugins.facebookconnect": {
             "APP_ID": "357797294395104",
             "APP_NAME": "Evince",
+            "PACKAGE_NAME": "EvinceApp"
+        },
+        "org.pbernasconi.progressIndicator": {
             "PACKAGE_NAME": "EvinceApp"
         }
     },

@@ -42,7 +42,7 @@
                 <h1 class="splash-logo">* evince *</h1>
             </ion-content>
             <div class="bar bar-footer">
-                <a ng-click="facebookLogIn()" class="footer-button facebook-color">Facebook Login</a>
+                <a ng-click="facebookLogIn()" class="footer-button facebook-color">Facebook</a>
                 <a href="#/sign-in" class="footer-button evince-color-one">Log In</a>
                 <a href="#/sign-up" class="footer-button evince-color-two">Sign Up</a>
             </div>
@@ -108,23 +108,25 @@
             <ion-slide-box on-slide-changed="slideChanged(index)">
 
                 <ion-slide class="home-page">
-                    <h1>evince</h1>
+                	<h1>evince
+	                	<img class="evince-header" src="img/top-bar.jpg">
+	                </h1>
                     <ion-content class="evince-list-content">
                         <ul id="messageList" class="list evince-list hidden">
                             <li class="item color-one" ng-click="evince(latestMessages[0].message)">*
                                 <span ng-bind="latestMessages[0].message"></span>*</li>
-                            <li class="item color-two" ng-click="evince(latestMessages[1].message)">*
+                            <li class="item color-five" ng-click="evince(latestMessages[1].message)">*
                                 <span ng-bind="latestMessages[1].message"></span>*</li>
                             <li class="item color-three" ng-click="evince(latestMessages[2].message)">*
                                 <span ng-bind="latestMessages[2].message"></span>*</li>
                             <li class="item color-one" ng-click="evince(latestMessages[3].message)">*
                                 <span ng-bind="latestMessages[3].message"></span>*</li>
-                            <li class="item color-two" ng-click="evince(latestMessages[4].message)">*
+                            <li class="item color-five" ng-click="evince(latestMessages[4].message)">*
                                 <span ng-bind="latestMessages[4].message"></span>*</li>
                             <li class="item color-four">
                                 <div class="item item-input evince-input row">
                                     <div class="placeholder-icon asterisk col">*</div>
-                                    <input class=" col" ng-model="evinceMessage" type="text" placeholder="whatever" maxlength="16">
+                                    <input class=" col" ng-model="evinceMessage" type="text" placeholder="express here" maxlength="15">
                                     <div class="placeholder-icon asterisk col" ng-class="{spin: evinceMessage}" ng-click="evince(evinceMessage)">*</div>
                                 </div>
                             </li>
@@ -133,8 +135,9 @@
                 </ion-slide>
 
                 <ion-slide class="friends-page">
-                    <h1 class="friends-page-header">friends
+                    <h1 class="friends-page-header">Friends
                         <a href="#/addfriends" class="button button-icon icon ion-plus-round"></a>
+                        <img class="friends-header" src="img/friends-top-bar.jpg">
                     </h1>
                     <p class="pane-title" ng-hide="friends">You have no friends yet.</p>
                     <ion-content class="friends-page-content" has-bouncing="true">
@@ -164,10 +167,6 @@
                             </ion-item>
                         </ion-list>
                     </ion-content>
-                </ion-tab>
-
-                <ion-tab on-select="onTabSelected('contacts')" title="Contacts" icon-on="ion-ios7-bookmarks" icon-off="ion-ios7-bookmarks-outline" class="bg-color-one">
-                    <p class="pane-title">Add Friends to contact to be implemented.</p>
                 </ion-tab>
 
                 <ion-tab on-select="onTabSelected('searchUsers')" title="Search" icon-on="ion-ios7-search-strong" icon-off="ion-ios7-search" class="bg-color-five">

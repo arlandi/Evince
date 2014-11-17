@@ -262,8 +262,8 @@ angular.module('starter', ['ionic', 'ngCordova'])
   }
 
   ionic.DomUtil.ready(function() {
-    $('.friends-page-content').css('top', $('.friends-page-header').outerHeight());
-    $('.evince-list-content').css('top', $('.friends-page-header').outerHeight());
+    $('.friends-page-content').css('top', $('.friends-page-header').outerHeight() - 2 );
+    $('.evince-list-content').css('top', $('.friends-page-header').outerHeight() - 2 );
     cordova.plugins.Keyboard.disableScroll(false);
   });
 
@@ -448,12 +448,14 @@ angular.module('starter', ['ionic', 'ngCordova'])
 
 })
 
-.controller('SendEvinceCtrl', function($scope, $state, $rootScope, $ionicLoading) {
+.controller('SendEvinceCtrl', function($scope, $state, $rootScope, $ionicLoading, $cordovaProgress) {
   $('body').removeClass('hide-nav');
 
   $scope.friends = $rootScope.currentUser.friendsObjects;
 
   $scope.sendEvince = function() {
+    $cordovaProgress.showSimple();
+
     var messageObject = Parse.Object.extend("Message");
     var userObject = Parse.Object.extend("User");
     var toSend = [];
@@ -474,6 +476,7 @@ angular.module('starter', ['ionic', 'ngCordova'])
     if (toSend.length) {
       Parse.Object.saveAll(toSend, {
         success: function(objs) {
+          $cordovaProgress.hide();
           $ionicLoading.show({
             template: 'Sent!',
             duration: 1000

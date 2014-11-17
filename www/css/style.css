@@ -1,4 +1,5 @@
 h1 { font-weight: 600; }
+.tab-item { max-width: none; }
 /*Home Page Styles*/
 .facebook-color {
   background: #3B5998;
@@ -13,17 +14,31 @@ h1 { font-weight: 600; }
   text-align: center;
 }
 
+.evince-header {
+  position: absolute;
+  top: 0px;
+  left: 0;
+  width: 100%;
+}
+
+.friends-header {
+  position: absolute;
+  top: 0px;
+  left: 0;
+  width: 100%;
+}
+
 .slider-pager {
   /*display: none;*/
 }
 
 .home-page h1, .friends-page h1 {
-  background: #30cbd7;
+  background: white;
   color: #fff;
   font-weight: 600;
   letter-spacing: 10px;
   margin: 0;
-  padding: 20px 10px 10px;
+  padding: 20px 10px 0px;
 }
 
 .friends-page h1 a {
@@ -31,6 +46,7 @@ h1 { font-weight: 600; }
   float: right;
   margin-left: -25px;
   padding: 0;
+  z-index: 1;
 }
 
 .friends-page-content {
@@ -66,9 +82,9 @@ ul.evince-list {
 
 .evince-list li {
   border: 0;
-  font-size: 2em;
+  font-size: 1.5em;
   font-weight: 600;
-  padding: 25px;
+  padding: 20px;
 }
 
 .evince-list li span{
@@ -101,6 +117,10 @@ ul.evince-list {
 }
 .bg-color-four {
   color: #000;
+}
+
+.color-five {
+  color: #3498db;
 }
 
 .bg-color-five {
