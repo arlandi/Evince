@@ -1,4 +1,19 @@
 h1 { font-weight: 600; }
+
+.addfriends-page h1.title {
+  background: url(../img/add-friends-top-bar.jpg);
+  margin: 0 !important;
+  background-size: 100%;
+  height: 60px !important;
+  top: 4px;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+.addfriends-page .back-button {
+  margin-top: 24px !important;
+}
+
 .tab-item { max-width: none; }
 /*Home Page Styles*/
 .facebook-color {

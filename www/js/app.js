@@ -26,7 +26,8 @@ angular.module('starter', ['ionic', 'ngCordova'])
     .state('addfriends', {
       url: '/addfriends',
       templateUrl: 'templates/addfriends.html',
-      controller: 'AddFriendsCtrl'
+      controller: 'AddFriendsCtrl',
+      containerClass: 'addfriends-page'
     })
     .state('sendevince', {
       url: '/sendevince',
@@ -38,6 +39,10 @@ angular.module('starter', ['ionic', 'ngCordova'])
 })
 
 .run(function($ionicPlatform, $rootScope, $state, $cordovaPush, $ionicPopup) {
+
+  $rootScope.$on('$stateChangeSuccess',function(event, toState, toParams, fromState, fromParams){
+    $rootScope.containerClass = toState.containerClass;
+  });
 
   $ionicPlatform.ready(function() {
 
@@ -96,13 +101,13 @@ angular.module('starter', ['ionic', 'ngCordova'])
           })
           arr = arr.unique();
           var currentUserLatestMessages = [{
-            message: 'Working'
+            message: 'Happy Dance'
           }, {
             message: 'Excited'
           }, {
-            message: 'Night Out'
+            message: 'Knock Knock'
           }, {
-            message: 'Gobble Gobble'
+            message: 'Chest Bump'
           }, {
             message: 'Evincible'
           }];
@@ -653,9 +658,9 @@ angular.module('starter', ['ionic', 'ngCordova'])
     }
 
     ionic.DomUtil.ready(function() {
-      $('.addfriends .tabs').css('top', $('#nav-bar').outerHeight());
-      $('.addfriends .pane').css('top', $('#nav-bar').outerHeight() + $('.addfriends .tabs').outerHeight());
-      $('.search-friends-content').css('bottom', $('#nav-bar').outerHeight() + $('.addfriends .tabs').outerHeight());
+      $('.addfriends .tabs').css('top', $('.addfriends-page h1.title').outerHeight());
+      $('.addfriends .pane').css('top', $('.addfriends-page h1.title').outerHeight() + $('.addfriends .tabs').outerHeight());
+      $('.search-friends-content').css('bottom', $('.addfriends-page h1.title').outerHeight() + $('.addfriends .tabs').outerHeight());
     });
   }
 })
