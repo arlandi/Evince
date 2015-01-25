@@ -58,3 +58,32 @@ Parse.Cloud.afterSave("Friendship", function(request) {
     }
   });
 });
+
+
+var Friendship = Parse.Object.extend("Friendship");
+
+// Check if stopId is set, and enforce uniqueness based on the stopId column.
+Parse.Cloud.beforeSave("Friendship", function(request, response) {
+
+  // Build fromUser
+  var fromUser = request.object.get('fromUser');
+
+  // Build toUser
+  var toUser = request.object.get('toUser');
+
+  var query = new Parse.Query(Friendship);
+  query.equalTo('fromUser', fromUser);
+  query.equalTo('toUser', toUser);
+  query.first({
+    success: function(object) {
+      if (object) {
+        response.error('Friendship already exists.');
+      } else {
+        response.success();
+      }
+    },
+    error: function(error) {
+      response.error('Could not validate uniqueness for this Friendship object');
+    }
+  });
+});
