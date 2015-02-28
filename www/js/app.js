@@ -89,12 +89,17 @@ angular.module('starter', ['ionic', 'ngCordova'])
     $rootScope.updateLatestMessages = function() {
 
       var currentLatestMessages = $rootScope.currentUser.latestMessages;
+      var index = $.inArray($rootScope.evinceMessage, currentLatestMessages);
 
-      if ( $.inArray($rootScope.evinceMessage, currentLatestMessages) === -1 ) {
+      if ( index === -1 ) {
         currentLatestMessages.unshift( $rootScope.evinceMessage );
         currentLatestMessages.pop();
-        window.localStorage['latestMessages'] = currentLatestMessages.toString();
+      } else {
+        currentLatestMessages.splice(0, 0, currentLatestMessages.splice(index, 1)[0]);
       }
+
+      window.localStorage['latestMessages'] = currentLatestMessages.toString();
+
     }
 
     $rootScope.getLatestMessages = function() {
