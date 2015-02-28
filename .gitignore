@@ -1,2 +1,4 @@
 platforms/
 node_modules/
+
+*.p12
