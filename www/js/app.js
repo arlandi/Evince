@@ -86,45 +86,74 @@ angular.module('starter', ['ionic', 'ngCordova'])
       return r;
     };
 
+    $rootScope.updateLatestMessages = function() {
+
+      var currentLatestMessages = $rootScope.currentUser.latestMessages;
+
+      if ( $.inArray($rootScope.evinceMessage, currentLatestMessages) === -1 ) {
+        currentLatestMessages.unshift( $rootScope.evinceMessage );
+        currentLatestMessages.pop();
+        window.localStorage['latestMessages'] = currentLatestMessages.toString();
+      }
+    }
+
     $rootScope.getLatestMessages = function() {
-      var messageObject = Parse.Object.extend("Message");
-      var messageCollectionDef = Parse.Collection.extend({
-        model: messageObject,
-        query: (new Parse.Query(messageObject).descending("createdAt").equalTo('fromUser', $rootScope.currentUser).limit(100))
-      });
-      var messageCollection = new messageCollectionDef();
 
-      messageCollection.fetch({
-        success: function(messageCollection) {
-          var arr = $.map(messageCollection.models, function(o) {
-            return o.attributes.message;
-          })
-          arr = arr.unique();
-          var currentUserLatestMessages = [{
-            message: 'Happy Dance'
-          }, {
-            message: 'Excited'
-          }, {
-            message: 'Knock Knock'
-          }, {
-            message: 'Chest Bump'
-          }, {
-            message: 'Evincible'
-          }];
+      // Default Latest Messages
+      var defaultLatestMessages = [
+      'Happy Dance',
+      'Excited',
+      'Knock Knock',
+      'Chest Bump',
+      'Evincible'];
 
-          arr.forEach(function(message) {
-            var _message = {
-              message: message
-            };
-            currentUserLatestMessages.unshift(_message);
-          });
-          $rootScope.currentUser.latestMessages = currentUserLatestMessages;
-          $rootScope.$broadcast('fetched:latestMessages');
-        },
-        error: function(userCollection, error) {
-          console.log("Problem fetching message database.");
-        }
-      });
+      var localStorageLatestMessages = window.localStorage['latestMessages'] || null;
+
+      $rootScope.currentUser.latestMessages = localStorageLatestMessages ? localStorageLatestMessages.split(',') : defaultLatestMessages;
+      $rootScope.$broadcast('fetched:latestMessages');
+
+      return;
+
+      // Deprecated
+      //
+      // var messageObject = Parse.Object.extend("Message");
+      // var messageCollectionDef = Parse.Collection.extend({
+      //   model: messageObject,
+      //   query: (new Parse.Query(messageObject).descending("createdAt").equalTo('fromUser', $rootScope.currentUser).limit(100))
+      // });
+      // var messageCollection = new messageCollectionDef();
+
+      // messageCollection.fetch({
+      //   success: function(messageCollection) {
+      //     var arr = $.map(messageCollection.models, function(o) {
+      //       return o.attributes.message;
+      //     })
+      //     arr = arr.unique();
+      //     var currentUserLatestMessages = [{
+      //       message: 'Happy Dance'
+      //     }, {
+      //       message: 'Excited'
+      //     }, {
+      //       message: 'Knock Knock'
+      //     }, {
+      //       message: 'Chest Bump'
+      //     }, {
+      //       message: 'Evincible'
+      //     }];
+
+      //     arr.forEach(function(message) {
+      //       var _message = {
+      //         message: message
+      //       };
+      //       currentUserLatestMessages.unshift(_message);
+      //     });
+      //     $rootScope.currentUser.latestMessages = currentUserLatestMessages;
+      //     $rootScope.$broadcast('fetched:latestMessages');
+      //   },
+      //   error: function(userCollection, error) {
+      //     console.log("Problem fetching message database.");
+      //   }
+      // });
     }
 
     $rootScope.getCurrentUser = function() {
@@ -258,7 +287,6 @@ angular.module('starter', ['ionic', 'ngCordova'])
     setTimeout(function() {
       $scope.$apply();
     });
-    $('#messageList').removeClass('hidden');
   });
 
   if ($rootScope.currentUser) {
@@ -486,6 +514,7 @@ angular.module('starter', ['ionic', 'ngCordova'])
             template: 'Sent!',
             duration: 1000
           });
+          $rootScope.updateLatestMessages();
           $state.go('home');
         },
         error: function(error) {
